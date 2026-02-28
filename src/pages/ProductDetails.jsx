@@ -7,12 +7,69 @@ function ProductDetails() {
   const navigate = useNavigate();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [added, setAdded] = useState(false);
+  const [isWishlisted, setIsWishlisted] = useState(false);
 
-  
+  useEffect(() => {
+    if (product) {
+      const wishlist = JSON.parse(localStorage.getItem("wishlist") || "[]");
+      setIsWishlisted(wishlist.some(item => item.id === product.id));
+    }
+  }, [product]);
+
+  const toggleWishlist = () => {
+    if (!product) return;
+
+    const user = localStorage.getItem("currentUser");
+    if (!user) {
+      navigate("/auth");
+      return;
+    }
+
+    let wishlist = JSON.parse(localStorage.getItem("wishlist") || "[]");
+    const isCurrentlyWishlisted = wishlist.some(item => item.id === product.id);
+
+    if (isCurrentlyWishlisted) {
+      wishlist = wishlist.filter(item => item.id !== product.id);
+      setIsWishlisted(false);
+    } else {
+      wishlist.push(product);
+      setIsWishlisted(true);
+    }
+
+    localStorage.setItem("wishlist", JSON.stringify(wishlist));
+    window.dispatchEvent(new CustomEvent('wishlistUpdated', { detail: { action: isCurrentlyWishlisted ? 'removed' : 'added' } }));
+  };
+
+  const handleAddToCart = () => {
+    if (!product) return;
+
+    const user = localStorage.getItem("currentUser");
+    if (!user) {
+      navigate("/auth");
+      return;
+    }
+
+    const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+    const existingItemIndex = cart.findIndex(item => item.id === product.id);
+
+    if (existingItemIndex > -1) {
+      cart[existingItemIndex].quantity = (cart[existingItemIndex].quantity || 1) + 1;
+    } else {
+      cart.push({ ...product, quantity: 1 });
+    }
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+    setAdded(true);
+    window.dispatchEvent(new CustomEvent('cartUpdated', { detail: { action: 'added' } }));
+    setTimeout(() => {
+      setAdded(false);
+    }, 2000);
+  };
+
   useEffect(() => {
     const foundProduct = products.find((p) => p.id === parseInt(id));
 
-    
     const timer = setTimeout(() => {
       setProduct(foundProduct);
       setLoading(false);
@@ -103,11 +160,17 @@ function ProductDetails() {
 
           <div className="pt-6 space-y-5">
             <div className="flex gap-4">
-              <button className="flex-grow bg-[#8B5E3C] text-white py-4 rounded-2xl font-black text-lg hover:bg-[#7a5234] transition shadow-xl hover:-translate-y-1 active:translate-y-0 duration-200">
-                Add to Cart
+              <button
+                onClick={handleAddToCart}
+                className="flex-grow bg-[#8B5E3C] text-white py-4 rounded-2xl font-black text-lg hover:bg-[#7a5234] transition shadow-xl hover:-translate-y-1 active:translate-y-0 duration-200"
+              >
+                {added ? "✓ Added" : "Add to Cart"}
               </button>
-              <button className="p-4 border border-gray-200 dark:border-gray-800 rounded-2xl text-gray-400 hover:text-[#8B5E3C] hover:border-[#8B5E3C] transition group">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="group-hover:fill-[#8B5E3C] transition">
+              <button
+                onClick={toggleWishlist}
+                className="p-4 border border-gray-200 dark:border-gray-800 rounded-2xl text-gray-400 hover:text-[#8B5E3C] hover:border-[#8B5E3C] transition group"
+              >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill={isWishlisted ? "#8B5E3C" : "none"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`${isWishlisted ? 'text-[#8B5E3C]' : ''} transition`}>
                   <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" />
                 </svg>
               </button>

@@ -54,6 +54,7 @@ function Home() {
   const [activeTab, setActiveTab] = useState("accessories");
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(true);
+  const [subscribed, setSubscribed] = useState(false);
 
   // Requirement: useEffect for simulating loading
   useEffect(() => {
@@ -143,8 +144,8 @@ function Home() {
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 className={`px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${activeTab === tab.id
-                    ? "bg-[#2c1810] dark:bg-[#8B5E3C] text-white shadow-md font-bold"
-                    : "bg-[#f0e9e2] dark:bg-[#2c1810] text-[#8B5E3C] hover:bg-[#e5d8ce] dark:hover:bg-[#3d2116]"
+                  ? "bg-[#2c1810] dark:bg-[#8B5E3C] text-white shadow-md font-bold"
+                  : "bg-[#f0e9e2] dark:bg-[#2c1810] text-[#8B5E3C] hover:bg-[#e5d8ce] dark:hover:bg-[#3d2116]"
                   }`}
               >
                 {tab.label}
@@ -223,30 +224,62 @@ function Home() {
       {/* ── Newsletter / 25% OFF ── */}
       <section className="py-20 px-6 lg:px-10 bg-[#faf7f4] dark:bg-[#1a0f0a] relative overflow-hidden transition-colors duration-300">
         <div className="max-w-7xl mx-auto relative">
+
+          {/* Success Popup (Matching Image) */}
+          {subscribed && (
+            <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 animate-in fade-in duration-300">
+              <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" onClick={() => setSubscribed(false)}></div>
+              <div className="relative bg-white dark:bg-[#2c1810] rounded-2xl shadow-2xl p-8 max-w-sm w-full border border-gray-100 dark:border-gray-800 animate-in zoom-in-95 duration-300">
+                <button
+                  onClick={() => setSubscribed(false)}
+                  className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition"
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+                  </svg>
+                </button>
+                <h3 className="text-2xl font-black text-[#2c1810] dark:text-[#f0e9e2] mb-3">Subscribed!</h3>
+                <p className="text-gray-500 dark:text-gray-400 font-medium">Thank you for subscribing to our newsletter.</p>
+              </div>
+            </div>
+          )}
+
           <div className="bg-[#f0e9e2] dark:bg-[#2c1810] rounded-3xl px-10 py-16 flex flex-col lg:flex-row items-center gap-10 relative overflow-hidden border border-transparent dark:border-gray-800">
             {/* Content */}
             <div className="flex-1 text-center">
               <h2 className="text-3xl lg:text-4xl font-bold text-[#2c1810] dark:text-[#f0e9e2]">
                 Join in and get{" "}
-                <span className="text-[#8B5E3C]">%25 OFF!</span>
+                <span className="text-[#8B5E3C]">25% OFF!</span>
               </h2>
               <p className="mt-3 text-gray-500 dark:text-gray-400 text-sm">
                 Subscribe to our newsletter and get 10% OFF of your first order!
               </p>
 
-              <div className="mt-7 flex items-center max-w-md mx-auto gap-2">
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  if (email.includes('@')) {
+                    setSubscribed(true);
+                    setEmail("");
+                  }
+                }}
+                className="mt-7 flex items-center max-w-md mx-auto gap-2"
+              >
                 <input
                   type="email"
+                  required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Your email address..."
-                  id="newsletter-email"
                   className="flex-1 border border-gray-200 dark:border-gray-700 bg-white dark:bg-[#1a0f0a] dark:text-white rounded-full px-5 py-3 text-sm outline-none focus:border-[#8B5E3C] transition shadow-sm placeholder:text-gray-400 dark:placeholder:text-gray-600"
                 />
-                <button className="bg-[#8B5E3C] text-white text-sm font-semibold px-6 py-3 rounded-full hover:bg-[#7a5234] transition shrink-0 shadow-md">
+                <button
+                  type="submit"
+                  className="bg-[#8B5E3C] text-white text-sm font-semibold px-6 py-3 rounded-full hover:bg-[#7a5234] transition shrink-0 shadow-md active:scale-95 duration-200"
+                >
                   Subscribe
                 </button>
-              </div>
+              </form>
             </div>
           </div>
         </div>

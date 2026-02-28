@@ -30,22 +30,6 @@ function Hero() {
             >
               Explore our products →
             </button>
-            <button onClick={() => navigate("/auth")} className="text-sm font-medium border border-[#8B5E3C] text-[#8B5E3C] hover:bg-[#8B5E3C] hover:text-white transition flex items-center gap-1.5 px-4 py-2 rounded-full">
-              <svg
-                width="14"
-                height="14"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
-                <circle cx="12" cy="7" r="4" />
-              </svg>
-              Login / Sign Up
-            </button>
           </div>
 
           {/* Stats */}

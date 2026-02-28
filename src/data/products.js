@@ -68,7 +68,7 @@ const accessories = [
     oldPrice: 10,
     price: 5.22,
     badge: "$20",
- image: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=600&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=600&auto=format&fit=crop",
     description:
       "A precision-engineered French press with a double-wall borosilicate glass carafe and ultra-fine mesh filter for a pure, sediment-free cup.",
   },
@@ -98,6 +98,14 @@ const coffeeBeans = [
     price: 9.99,
     image: "https://images.unsplash.com/photo-1447933601403-0c6688de566e?q=80&w=600&auto=format&fit=crop",
     description: "A bold and intense dark roast with low acidity and a full body, featuring notes of dark chocolate and toasted oak.",
+  },
+  {
+    id: 204,
+    name: "Cappuccino",
+    type: "Coffee Beans",
+    price: 6.0,
+    image: "https://images.unsplash.com/photo-1534778101976-62847782c213?q=80&w=600&auto=format&fit=crop",
+    description: "A classic coffee favorite with a harmonious mix of rich espresso, steamed milk, and frothy foam. Often topped with a sprinkle of cocoa powder for added indulgence.",
   },
 ];
 

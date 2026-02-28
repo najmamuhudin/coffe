@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 function Auth() {
     const [isLogin, setIsLogin] = useState(true);
@@ -10,6 +10,8 @@ function Auth() {
     });
     const [error, setError] = useState("");
     const navigate = useNavigate();
+
+    const location = useLocation();
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -28,7 +30,10 @@ function Auth() {
             const user = users.find((u) => u.email === formData.email && u.password === formData.password);
             if (user) {
                 localStorage.setItem("currentUser", JSON.stringify(user));
-                navigate("/");
+                window.dispatchEvent(new Event('userLogin'));
+                if (location.pathname === "/auth") {
+                    navigate("/");
+                }
             } else {
                 setError("Invalid email or password.");
             }
@@ -42,7 +47,10 @@ function Auth() {
                 users.push(newUser);
                 localStorage.setItem("users", JSON.stringify(users));
                 localStorage.setItem("currentUser", JSON.stringify(newUser));
-                navigate("/");
+                window.dispatchEvent(new Event('userLogin'));
+                if (location.pathname === "/auth") {
+                    navigate("/");
+                }
             }
         }
     };
