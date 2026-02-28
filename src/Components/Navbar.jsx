@@ -72,10 +72,6 @@ function Navbar() {
       <div className="max-w-[88%] mx-auto flex items-center justify-between py-3.5 px-4 md:px-6">
         {/* Left: Mobile Menu & Logo */}
         <div className="flex items-center justify-start flex-1 gap-4">
-          <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="md:hidden p-2 text-gray-500">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d={isMenuOpen ? "M18 6L6 18M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"} /></svg>
-          </button>
-
           <Link to="/" className="flex items-center gap-2.5 shrink-0 group">
             <div className="w-9 h-9 bg-[#8B5E3C] rounded-xl flex items-center justify-center shadow-lg shadow-[#8B5E3C]/20 group-hover:scale-105 transition-transform">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5"><path d="M17 8h1a4 4 0 010 8h-1M3 8h14v9a4 4 0 01-4 4H7a4 4 0 01-4-4V8zM6 1v3M10 1v3M14 1v3" /></svg>
@@ -112,10 +108,10 @@ function Navbar() {
             </Link>
           )}
 
-          <div className="h-6 w-px bg-gray-200 dark:bg-gray-800 mx-1 hidden sm:block" />
+          <div className="h-6 w-px bg-gray-200 dark:bg-gray-800 mx-1 hidden md:block" />
 
           {currentUser ? (
-            <div className="flex items-center gap-3 pl-1">
+            <div className="hidden md:flex items-center gap-3 pl-1">
               <div className="hidden sm:flex flex-col items-end">
                 <span className="text-[11px] text-gray-400 font-bold uppercase tracking-widest leading-none mb-0.5">Welcome</span>
                 <span className="text-sm font-black text-[#2c1810] dark:text-[#f0e9e2] leading-none">{currentUser.name.split(' ')[0]}</span>
@@ -128,8 +124,15 @@ function Navbar() {
               </button>
             </div>
           ) : (
-            <Link to="/auth" className="text-sm font-bold bg-[#8B5E3C] text-white px-5 py-2 rounded-lg hover:bg-[#7a5234] transition shadow-md">Sign In</Link>
+            <Link to="/auth" className="hidden md:block text-sm font-bold bg-[#8B5E3C] text-white px-5 py-2 rounded-lg hover:bg-[#7a5234] transition shadow-md">Sign Up</Link>
           )}
+
+          {/* Mobile Menu Button */}
+          <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="md:hidden p-2 text-gray-500 ml-1">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d={isMenuOpen ? "M18 6L6 18M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"} />
+            </svg>
+          </button>
         </div>
       </div>
 
@@ -138,7 +141,20 @@ function Navbar() {
           {NAV_LINKS.map(link => (
             <NavLink key={link.label} to={link.href} onClick={() => setIsMenuOpen(false)} className="text-sm font-bold text-gray-600 dark:text-gray-400 hover:text-[#8B5E3C]">{link.label}</NavLink>
           ))}
-          {!currentUser && <Link to="/auth" onClick={() => setIsMenuOpen(false)} className="text-sm font-bold text-[#8B5E3C]">Sign In</Link>}
+          {!currentUser ? (
+            <Link to="/auth" onClick={() => setIsMenuOpen(false)} className="text-sm font-bold text-[#8B5E3C] mt-2 border-t border-gray-100 dark:border-gray-800 pt-4">Sign Up</Link>
+          ) : (
+            <button
+              onClick={() => {
+                localStorage.removeItem("currentUser");
+                window.dispatchEvent(new Event('userLogin'));
+                setIsMenuOpen(false);
+              }}
+              className="text-sm font-bold text-red-500 text-left mt-2 border-t border-gray-100 dark:border-gray-800 pt-4"
+            >
+              Logout ({currentUser.name.split(' ')[0]})
+            </button>
+          )}
         </div>
       </div>
 
